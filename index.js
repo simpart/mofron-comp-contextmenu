@@ -13,6 +13,7 @@ const Frame    = require('mofron-comp-frame');
 const FadePack = require('mofron-effect-fadepack');
 const Click    = require('mofron-event-click');
 const ConfArg = mofron.class.ConfArg;
+const comutl  = mofron.util.common;
 
 module.exports = class extends Frame {
     /**
@@ -27,13 +28,29 @@ module.exports = class extends Frame {
         try {
             super();
             this.modname("ContextMenu");
-            //this.shortForm("");
             /* init config */
+	    this.confmng().add('offset_x', { type:'size', init:'0px' });
+	    this.confmng().add('offset_y', { type:'size', init:'0px' });
 	    /* set config */
 	    if (0 < arguments.length) {
                 this.config(p1);
 	    }
         } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+
+    beforeRender () {
+        try {
+            super.beforeRender();
+	    let chd = this.child();
+	    let hei = '0rem';
+            for (let cidx in chd) {
+                hei = comutl.sizesum(chd[cidx].height(), hei);
+	    }
+	    this.height(hei);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -67,9 +84,22 @@ module.exports = class extends Frame {
     position (x,y) {
         try {
             this.style({
-                'top':  y + 'px',
-		'left': x + 'px'
+                'top':  comutl.sizesum(y+'px', this.offset()[1]),
+		'left': comutl.sizesum(x+'px', this.offset()[0])
 	    });
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+	}
+    }
+
+    offset (x,y) {
+        try {
+            if (undefined === x) {
+                return [this.confmng('offset_x'),this.confmng('offset_y')];
+	    }
+	    this.confmng('offset_x', x);
+	    this.confmng('offset_y', y);
 	} catch (e) {
             console.error(e.stack);
             throw e;

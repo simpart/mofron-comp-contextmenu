@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-contextmenu",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "contextmenu component for mofron",
   "main": "index.js",
   "scripts": {
